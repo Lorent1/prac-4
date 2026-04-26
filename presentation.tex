@@ -13,8 +13,7 @@
 
 \title{Мечи залива работорговцев}
 \subtitle{Разведывательный анализ данных поставщиков стали}
-\author{Студент 1 \and Студент 2 \and Студент 3}
-\institute{Практикум, 3 курс}
+\author{ Мухачев Петр \\Козлов Дмитрий \\Милованов Артем }
 \date{\today}
 
 \begin{document}
@@ -32,16 +31,16 @@
 \begin{frame}{Цель работы}
     \begin{block}{Основная цель}
         На основе данных о производстве и поломках мечей выбрать поставщика стали
-        для эксклюзивного контракта: \texttt{harpy.co} или \texttt{westeros.inc}.
+        для эксклюзивного контракта: \texttt{harpy.co} или \texttt{westeros.inc}
     \end{block}
 \end{frame}
 
 \begin{frame}{Задачи}
     \begin{enumerate}
-        \item Подготовить и очистить данные (обработка аномалий, агрегация по месяцам).
-        \item Рассчитать метрики качества и надежности поставщиков.
-        \item Учесть тренд изменения брака во времени.
-        \item Сформировать итоговую рекомендацию для выбора контракта.
+        \item Подготовить и очистить данные
+        \item Рассчитать метрики качества и надежности поставщиков
+        \item Учесть тренд изменения брака во времени
+        \item Сформировать итоговую рекомендацию для выбора контракта
     \end{enumerate}
 \end{frame}
 
@@ -89,96 +88,52 @@
 \section{Результаты}
 
 \begin{frame}{Сравнение поставщиков по итоговым метрикам}
-\small
-\begin{center}
+
+\footnotesize
+\begin{table}
+\centering
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
 \toprule
 Поставщик & defect\_rate & early\_rate & slope & residual\_std & last\_month & worst\_month \\
 \midrule
-harpy.co      & 0.19282 & 0.02477 & -0.08973 & 0.04052 & 0.02414 & 0.44874 \\
-westeros.inc  & 0.26147 & 0.08484 & -0.06769 & 0.01073 & 0.08360 & 0.41421 \\
+harpy.co     & 0.19282 & 0.02477 & -0.08973 & 0.04052 & 0.02414 & 0.44874 \\
+westeros.inc & 0.26147 & 0.08484 & -0.06769 & 0.01073 & 0.08360 & 0.41421 \\
 \bottomrule
 \end{tabular}
-\end{center}
+}
+\end{table}
 
 \vspace{0.2cm}
+
 \footnotesize
 \textbf{Интерпретация:}
-harpy.co лучше по среднему браку, ранним поломкам, текущему уровню и скорости улучшения;
+
+harpy.co лучше по среднему браку, ранним поломкам, текущему уровню и скорости улучшения.
+
 westeros.inc более стабилен относительно собственного тренда.
+
 \end{frame}
 
-\begin{frame}{Рисунок: доля дефектов (ключевые метрики)}
+
+\begin{frame}{Доля дефектов}
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.9\textwidth,
-    height=0.55\textwidth,
-    ybar,
-    bar width=10pt,
-    symbolic x coords={harpy,westeros},
-    xtick=data,
-    ymin=0,
-    ylabel={Значение},
-    legend style={at={(0.5,-0.2)},anchor=north,legend columns=2},
-    nodes near coords,
-    nodes near coords align={vertical}
-]
-\addplot coordinates {(harpy,0.19282) (westeros,0.26147)};
-\addplot coordinates {(harpy,0.02477) (westeros,0.08484)};
-\legend{defect\_rate,early\_failure\_rate}
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=1\textwidth]{./1.png}
 \end{frame}
 
-\begin{frame}{Рисунок: тренд месячной доли дефектов}
+\begin{frame}{Тренд месячной доли дефектов}
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.9\textwidth,
-    height=0.55\textwidth,
-    xmin=1, xmax=6,
-    ymin=0, ymax=0.5,
-    xlabel={Месяц производства},
-    ylabel={Доля дефектов},
-    legend style={at={(0.5,-0.2)},anchor=north,legend columns=2},
-    grid=both
-]
-% Приближенные точки по агрегированным данным из анализа
-\addplot+[mark=o, thick] coordinates {
-    (1,0.44874) (2,0.34209) (3,0.21629) (4,0.07724) (5,0.04921) (6,0.02414)
-};
-\addplot+[mark=square, thick] coordinates {
-    (1,0.41402) (2,0.36893) (3,0.31276) (4,0.22914) (5,0.15808) (6,0.08360)
-};
-\legend{harpy.co,westeros.inc}
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=1\textwidth]{./4.png}
 \end{frame}
 
-\begin{frame}{Рисунок: производство по месяцам}
+\begin{frame}{Сравнение производства с дефектами}
 \centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.9\textwidth,
-    height=0.55\textwidth,
-    xmin=1, xmax=6,
-    ymin=5200, ymax=5320,
-    xlabel={Месяц производства},
-    ylabel={Количество произведенных мечей},
-    legend style={at={(0.5,-0.2)},anchor=north,legend columns=2},
-    grid=major
-]
-% Агрегированные значения производства по месяцам
-\addplot+[mark=o, thick] coordinates {
-    (1,5248) (2,5256) (3,5243) (4,5282) (5,5243) (6,5260)
-};
-\addplot+[mark=square, thick] coordinates {
-    (1,5280) (2,5272) (3,5298) (4,5285) (5,5263) (6,5227)
-};
-\legend{harpy.co,westeros.inc}
-\end{axis}
-\end{tikzpicture}
+\includegraphics[width=0.8\textwidth]{./2.png}
+\end{frame}
+
+\begin{frame}{Дополнительные метрики}
+\centering
+\includegraphics[width=1\textwidth]{./3.png}
 \end{frame}
 
 \section{Выводы}
@@ -186,17 +141,17 @@ westeros.inc более стабилен относительно собстве
 \begin{frame}{Выводы и рекомендация}
     \begin{enumerate}
         \item У \texttt{harpy.co} ниже средний уровень брака:
-        \(0.19282 < 0.26147\).
+        \(0.19282 < 0.26147\)
         \item У \texttt{harpy.co} существенно ниже ранние поломки:
-        \(0.02477 < 0.08484\).
-        \item Тренд улучшения у \texttt{harpy.co} быстрее (более отрицательный наклон).
+        \(0.02477 < 0.08484\)
+        \item Тренд улучшения у \texttt{harpy.co} быстрее
         \item Несмотря на более высокий шум вокруг тренда, текущая доля дефектов у
-        \texttt{harpy.co} значительно ниже.
+        \texttt{harpy.co} значительно ниже
     \end{enumerate}
 
     \vspace{0.3cm}
     \begin{block}{Итог}
-        Рекомендуется заключить эксклюзивный контракт с \texttt{harpy.co}.
+        Рекомендуется заключить эксклюзивный контракт с \texttt{harpy.co}
     \end{block}
 \end{frame}
 
@@ -204,19 +159,19 @@ westeros.inc более стабилен относительно собстве
     \begin{thebibliography}{9}
         \bibitem{eda}
         Tukey J.W.\\
-        Exploratory Data Analysis. Addison-Wesley, 1977.
+        Exploratory Data Analysis. Addison-Wesley, 1977
 
         \bibitem{pandas}
         McKinney W.\\
-        Python for Data Analysis. O'Reilly, 2022.
+        Python for Data Analysis. O'Reilly, 2022
 
         \bibitem{numpy}
         Harris C.R. et al.\\
-        Array programming with NumPy. Nature, 2020.
+        Array programming with NumPy. Nature, 2020
 
         \bibitem{matplotlib}
         Hunter J.D.\\
-        Matplotlib: A 2D Graphics Environment. Computing in Science \& Engineering, 2007.
+        Matplotlib: A 2D Graphics Environment. Computing in Science \& Engineering, 2007
     \end{thebibliography}
 \end{frame}
 
